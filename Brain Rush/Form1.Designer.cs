@@ -59,7 +59,7 @@ namespace Brain_Rush
             // 
             // PanelLogin
             // 
-            this.PanelLogin.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.PanelLogin.BackColor = System.Drawing.Color.Transparent;
             this.PanelLogin.Controls.Add(this.btnLogin);
             this.PanelLogin.Controls.Add(this.txtUsuario);
             this.PanelLogin.Controls.Add(this.txtPassword);
@@ -98,6 +98,7 @@ namespace Brain_Rush
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.label2.Location = new System.Drawing.Point(319, 181);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
@@ -107,6 +108,7 @@ namespace Brain_Rush
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.label1.Location = new System.Drawing.Point(319, 247);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
@@ -152,7 +154,7 @@ namespace Brain_Rush
             // lblPuntaje
             // 
             this.lblPuntaje.AutoSize = true;
-            this.lblPuntaje.Location = new System.Drawing.Point(563, 13);
+            this.lblPuntaje.Location = new System.Drawing.Point(681, 10);
             this.lblPuntaje.Name = "lblPuntaje";
             this.lblPuntaje.Size = new System.Drawing.Size(35, 13);
             this.lblPuntaje.TabIndex = 8;
@@ -161,7 +163,7 @@ namespace Brain_Rush
             // lblTiempoLimite
             // 
             this.lblTiempoLimite.AutoSize = true;
-            this.lblTiempoLimite.Location = new System.Drawing.Point(667, 13);
+            this.lblTiempoLimite.Location = new System.Drawing.Point(12, 36);
             this.lblTiempoLimite.Name = "lblTiempoLimite";
             this.lblTiempoLimite.Size = new System.Drawing.Size(35, 13);
             this.lblTiempoLimite.TabIndex = 7;
@@ -214,7 +216,7 @@ namespace Brain_Rush
             // lblPregunta
             // 
             this.lblPregunta.AutoSize = true;
-            this.lblPregunta.Location = new System.Drawing.Point(350, 137);
+            this.lblPregunta.Location = new System.Drawing.Point(239, 178);
             this.lblPregunta.Name = "lblPregunta";
             this.lblPregunta.Size = new System.Drawing.Size(35, 13);
             this.lblPregunta.TabIndex = 2;
@@ -287,6 +289,7 @@ namespace Brain_Rush
             this.Controls.Add(this.PanelLogin);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.PanelLogin.ResumeLayout(false);
             this.PanelLogin.PerformLayout();
             this.PanelPrincipal.ResumeLayout(false);

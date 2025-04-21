@@ -10,10 +10,15 @@ using System.Windows.Forms;
 
 namespace Brain_Rush
 {
- 
-    public partial class Form1 : Form
+   
 
+    public partial class Form1 : Form
     {
+
+        readonly Font fontPreguntas = new Font("Segoe UI", 20, FontStyle.Bold);
+        readonly Font opcionesFont = new Font("Segoe UI", 14);
+        readonly Font botonesFont = new Font("Segoe UI", 12, FontStyle.Bold);
+
         // aqui empieza el login
         private Dictionary<string, string> usuarios = new Dictionary<string, string>()
         {
@@ -24,6 +29,8 @@ namespace Brain_Rush
 
         public Form1()
         {
+            this.BackColor = Color.FromArgb(45,45,48);
+
             InitializeComponent();
 
             PanelLogin.Visible = true;
@@ -46,20 +53,22 @@ namespace Brain_Rush
             panelGameInit.Visible = true;
 
             EmpezarJuego();
+            
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
             string usuario = txtUsuario.Text.Trim();
             string password = txtPassword.Text;
 
             if (AutenticarUsuario(usuario, password)){
-                MostrarPrincipal(usuario);
+                await Transicion(PanelLogin, panelGameInit);
+                
+            
             }
             else 
             {
-                MessageBox.Show("Usuario o contraseña Incorecto", "ingrese un usuario y contraseña valido"
-                    , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MostrarMesaje("Usuario o contraseña incorrectos", Color.DarkRed);
 
                 txtPassword.Text = "";
                 txtUsuario.Focus();
@@ -84,7 +93,7 @@ namespace Brain_Rush
         private void Timer_Tick (object sender, EventArgs e)
         {
             tiempoRestante--;
-            lblTiempoLimite.Text = $"Tiempo: ´{tiempoRestante}s";
+            lblTiempoLimite.Text = $"Tiempo: {tiempoRestante}s";
             progressTiempo.Value = tiempoRestante;
 
             if (tiempoRestante <= 0 ) { timer.Stop();
@@ -94,7 +103,7 @@ namespace Brain_Rush
             }
         }
 
-        private void btnSiguiente_Click(object sender, EventArgs e)
+        private async void btnSiguiente_Click(object sender, EventArgs e)
         {
             timer.Stop();
 
@@ -107,7 +116,7 @@ namespace Brain_Rush
 
             if(respuestaSeleccionada == -1)
             {
-                MessageBox.Show("Seleccione una opcion", "quiz");
+                MostrarMesaje("Selecciona una Opcion!", Color.DarkGoldenrod);
                 timer.Start();
                 return;
             }
@@ -116,14 +125,20 @@ namespace Brain_Rush
             if (respuestaSeleccionada == pregunta.respuestasBuenas)
             {
                 puntaje += CalcularPuntos();
-                MessageBox.Show("Correcto", "quiz");
+                MostrarMesaje("¡Correcto!", Color.Green);
             }
             else
             {
-                MessageBox.Show($"incorrecto. la respuesta correcta era: {pregunta.Opciones[pregunta.respuestasBuenas]}", "quiz");
+                MostrarMesaje($"incorrecto. la respuesta correcta era: {pregunta.Opciones[pregunta.respuestasBuenas]}",Color.Red);
             }
 
             lblPuntaje.Text = $"puntaje: {puntaje}";
+
+            while (panelMensaje.Visible)
+            {
+                await Task.Delay(100);
+            }
+
             preguntaActual++;
             MostrarPregunta();
         }
@@ -135,6 +150,7 @@ namespace Brain_Rush
             PanelPrincipal.Visible = true;
 
             PrepararPartida();
+            lblPuntaje.Text = $"puntaje: {puntaje}";
         }
 
         private void MostrarPregunta ()
@@ -491,9 +507,164 @@ namespace Brain_Rush
             EmpezarJuego();
         }
 
+        // aqui comienza lo grafico
+        private void EstilizarControles()
+        {
+            
+            PanelLogin.BackColor = Color.Transparent;
+            
+            PanelPrincipal.BackColor = Color.Transparent;
+
+            panelGameInit.BackColor = Color.Transparent;
+
+            // Estilo para los botones
+            foreach (Control c in Controls)
+            {
+                if (c is Button btn)
+                {
+                    btn.FlatStyle = FlatStyle.Flat;
+                    btn.FlatAppearance.BorderSize = 0;
+                    btn.BackColor = Color.FromArgb(0, 122, 204); // Azul moderno
+                    btn.ForeColor = Color.White;
+                    btn.Font = botonesFont;
+                    btn.Padding = new Padding(10);
+                    btn.Height = 40;
+                    btn.Cursor = Cursors.Hand;
+
+                    // Efecto hover
+                    btn.MouseEnter += (s, e) => btn.BackColor = Color.FromArgb(28, 151, 234);
+                    btn.MouseLeave += (s, e) => btn.BackColor = Color.FromArgb(0, 122, 204);
+                }
+
+                if (c is RadioButton rb)
+                {
+                    rb.FlatStyle = FlatStyle.Flat;
+                    rb.Font = opcionesFont;
+                    rb.ForeColor = Color.White;
+                    rb.Cursor = Cursors.Hand;
+                }
+            }
+
+            // Estilo para la pregunta
+            lblPregunta.Font = fontPreguntas;
+            lblPregunta.ForeColor = Color.White;
+            lblPregunta.TextAlign = ContentAlignment.MiddleCenter;
+
+            // Estilo para temporizador y puntaje
+            lblTiempoLimite.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+            lblTiempoLimite.ForeColor = Color.Orange;
+            lblPuntaje.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+            lblPuntaje.ForeColor = Color.LightGreen;
+
+            // ProgressBar personalizado
+            progressTiempo.ForeColor = Color.Orange;
+            progressTiempo.Style = ProgressBarStyle.Continuous;
+        }
+
+
+        private void TituloGrafico()
+        {
+            Label lblTitulo = new Label
+            {
+                Text = "BRAIN RUSH",
+                Font = new Font("Segoe UI", 48, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                AutoSize = true
+            };
+
+            lblTitulo.Location = new Point((this.Width - lblTitulo.Width) / 4, 16);
+            this.Controls.Add(lblTitulo);
+            lblTitulo.BringToFront();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            EstilizarControles();
+            InitPanelMesaje();
+            EmpezarJuego();
+            TituloGrafico();
+        }
+
+        //panel de mesajes 
+
+        private Panel panelMensaje;
+
+        private void InitPanelMesaje()
+        {
+            panelMensaje = new Panel() // creacion del panel de mensaje correcto o incorrecto
+            {
+                Size = new Size(this.Width, this.Height),
+                Location = new Point(0, 0),
+                Visible = false,
+                BackColor = Color.FromArgb(150, 0, 0, 0)
+            };
+
+            Label lblMensaje = new Label()// texto del mesaje
+            {
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 36, FontStyle.Bold),
+                ForeColor = Color.White,
+                Name = "lblMensaje"
+            };
+
+            Button btnContinuar = new Button
+            {
+                Text = "CONTINUAR",
+                Dock = DockStyle.Bottom,
+                Height = 60
+            };
+            btnContinuar.Click += (s, e) => panelMensaje.Visible = false;
+
+            panelMensaje.Controls.Add(lblMensaje);
+            panelMensaje.Controls.Add(btnContinuar);
+            this.Controls.Add(panelMensaje);
+            panelMensaje.BringToFront();
+        }
+
+        private void MostrarMesaje(string texto, Color ColorFondo)// aqui se cambia el color y mensaje del panel
+        {
+            var lbl = panelMensaje.Controls.Find("lblMensaje", true).FirstOrDefault() as Label;
+            if (lbl != null)
+            {
+                lbl.Text = texto;
+                panelMensaje.BackColor = Color.FromArgb(150, ColorFondo.R, ColorFondo.G, ColorFondo.B);
+                panelMensaje.Visible = true;
+            }
+        }
+
+        private async Task Transicion (Panel Ocultar, Panel Mostrar)
+        {
+            Ocultar.SetOpacity(1.0);
+            Mostrar.SetOpacity(0.0);
+            Mostrar.Visible = true;
+
+            for(int i = 100; i >= 0; i--)
+            {
+                double opacidad = i / 10.0;
+                Ocultar.SetOpacity(opacidad);
+                await Task.Delay(30);
+                Application.DoEvents(); // para actualizar la UI
+            }
+
+            Ocultar.Visible = false;
+            
+           
+            for (int i = 0; i <= 100; i++)
+            {
+                double opacidad = i / 10.0;
+                Ocultar.SetOpacity(opacidad);
+                await Task.Delay(30);
+                Application.DoEvents();
+            }
+        }
+
+
     }
 
-    public class Preguntas
+
+    public class Preguntas// todo lo que tiene que ver con preguntas 
     {
         public string Leyenda { get; set; }
         public string[] Opciones { get; set; }
@@ -501,9 +672,58 @@ namespace Brain_Rush
         public string dificultad { get; set; }
     }
 
-    public enum Modo
+    public enum Modo// nombres de los modos de juego
     {
         Facil, intermedia, dificil, aleatorio
     }
+
+    public static class ControlExtensions
+    {
+        public static void SetOpacity(this Control control, double opacity)
+        {
+            // Validación segura del valor de opacidad
+            opacity = Math.Max(0, Math.Min(1, opacity)); // Asegura que esté entre 0 y 1
+
+            // Solo aplicar si el control tiene color de fondo sólido
+            if (control.BackColor.A != 255)
+                return;
+
+            // Crear color semitransparente
+            Color originalColor = control.BackColor;
+            Color semiTransparent = Color.FromArgb((int)(opacity * 255),
+                                                 originalColor.R,
+                                                 originalColor.G,
+                                                 originalColor.B);
+
+            // Aplicar al control principal
+            control.BackColor = semiTransparent;
+
+            // Aplicar a controles hijos (opcional)
+            ApplyOpacityToChildControls(control, opacity);
+        }
+
+        private static void ApplyOpacityToChildControls(Control parent, double opacity)
+        {
+            foreach (Control child in parent.Controls)
+            {
+                // Solo aplicar a controles que no tienen transparencia propia
+                if (child.BackColor.A == 255 && !(child is Label)) // Excluimos Labels
+                {
+                    Color childColor = child.BackColor;
+                    child.BackColor = Color.FromArgb((int)(opacity * 255),
+                                                    childColor.R,
+                                                    childColor.G,
+                                                    childColor.B);
+                }
+
+                // Aplicar recursivamente a controles anidados
+                if (child.HasChildren)
+                {
+                    ApplyOpacityToChildControls(child, opacity);
+                }
+            }
+        }
+    }
+
 
 }
