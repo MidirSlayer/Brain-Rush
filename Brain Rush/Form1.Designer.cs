@@ -29,6 +29,7 @@ namespace Brain_Rush
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.PanelLogin = new System.Windows.Forms.Panel();
             this.btnLogin = new System.Windows.Forms.Button();
             this.txtUsuario = new System.Windows.Forms.TextBox();
@@ -36,6 +37,7 @@ namespace Brain_Rush
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.PanelPrincipal = new System.Windows.Forms.Panel();
+            this.btnTerminar = new System.Windows.Forms.Button();
             this.btnSiguiente = new System.Windows.Forms.Button();
             this.progressTiempo = new System.Windows.Forms.ProgressBar();
             this.lblPuntaje = new System.Windows.Forms.Label();
@@ -68,7 +70,7 @@ namespace Brain_Rush
             this.PanelLogin.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelLogin.Location = new System.Drawing.Point(0, 0);
             this.PanelLogin.Name = "PanelLogin";
-            this.PanelLogin.Size = new System.Drawing.Size(800, 450);
+            this.PanelLogin.Size = new System.Drawing.Size(800, 435);
             this.PanelLogin.TabIndex = 0;
             // 
             // btnLogin
@@ -118,6 +120,7 @@ namespace Brain_Rush
             // PanelPrincipal
             // 
             this.PanelPrincipal.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.PanelPrincipal.Controls.Add(this.btnTerminar);
             this.PanelPrincipal.Controls.Add(this.btnSiguiente);
             this.PanelPrincipal.Controls.Add(this.progressTiempo);
             this.PanelPrincipal.Controls.Add(this.lblPuntaje);
@@ -130,12 +133,23 @@ namespace Brain_Rush
             this.PanelPrincipal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelPrincipal.Location = new System.Drawing.Point(0, 0);
             this.PanelPrincipal.Name = "PanelPrincipal";
-            this.PanelPrincipal.Size = new System.Drawing.Size(800, 450);
+            this.PanelPrincipal.Size = new System.Drawing.Size(800, 435);
             this.PanelPrincipal.TabIndex = 1;
             this.PanelPrincipal.Visible = false;
             // 
+            // btnTerminar
+            // 
+            this.btnTerminar.Location = new System.Drawing.Point(619, 381);
+            this.btnTerminar.Name = "btnTerminar";
+            this.btnTerminar.Size = new System.Drawing.Size(97, 28);
+            this.btnTerminar.TabIndex = 11;
+            this.btnTerminar.Text = "Terminar partida";
+            this.btnTerminar.UseVisualStyleBackColor = true;
+            this.btnTerminar.Click += new System.EventHandler(this.btnTerminar_Click);
+            // 
             // btnSiguiente
             // 
+            this.btnSiguiente.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnSiguiente.Location = new System.Drawing.Point(344, 318);
             this.btnSiguiente.Name = "btnSiguiente";
             this.btnSiguiente.Size = new System.Drawing.Size(75, 23);
@@ -172,6 +186,7 @@ namespace Brain_Rush
             // rbOpcion4
             // 
             this.rbOpcion4.AutoSize = true;
+            this.rbOpcion4.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.rbOpcion4.Location = new System.Drawing.Point(471, 289);
             this.rbOpcion4.Name = "rbOpcion4";
             this.rbOpcion4.Size = new System.Drawing.Size(85, 17);
@@ -183,6 +198,7 @@ namespace Brain_Rush
             // rbOpcion3
             // 
             this.rbOpcion3.AutoSize = true;
+            this.rbOpcion3.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.rbOpcion3.Location = new System.Drawing.Point(210, 289);
             this.rbOpcion3.Name = "rbOpcion3";
             this.rbOpcion3.Size = new System.Drawing.Size(85, 17);
@@ -194,6 +210,7 @@ namespace Brain_Rush
             // rbOpcion2
             // 
             this.rbOpcion2.AutoSize = true;
+            this.rbOpcion2.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.rbOpcion2.Location = new System.Drawing.Point(471, 227);
             this.rbOpcion2.Name = "rbOpcion2";
             this.rbOpcion2.Size = new System.Drawing.Size(85, 17);
@@ -205,6 +222,7 @@ namespace Brain_Rush
             // rbOpcion1
             // 
             this.rbOpcion1.AutoSize = true;
+            this.rbOpcion1.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.rbOpcion1.Location = new System.Drawing.Point(210, 227);
             this.rbOpcion1.Name = "rbOpcion1";
             this.rbOpcion1.Size = new System.Drawing.Size(85, 17);
@@ -216,11 +234,12 @@ namespace Brain_Rush
             // lblPregunta
             // 
             this.lblPregunta.AutoSize = true;
-            this.lblPregunta.Location = new System.Drawing.Point(239, 178);
+            this.lblPregunta.Location = new System.Drawing.Point(12, 154);
             this.lblPregunta.Name = "lblPregunta";
             this.lblPregunta.Size = new System.Drawing.Size(35, 13);
             this.lblPregunta.TabIndex = 2;
             this.lblPregunta.Text = "label3";
+            this.lblPregunta.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // panelGameInit
             // 
@@ -233,21 +252,23 @@ namespace Brain_Rush
             this.panelGameInit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGameInit.Location = new System.Drawing.Point(0, 0);
             this.panelGameInit.Name = "panelGameInit";
-            this.panelGameInit.Size = new System.Drawing.Size(800, 450);
+            this.panelGameInit.Size = new System.Drawing.Size(800, 435);
             this.panelGameInit.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(239, 154);
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label4.Location = new System.Drawing.Point(223, 154);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(105, 13);
+            this.label4.Size = new System.Drawing.Size(157, 13);
             this.label4.TabIndex = 5;
-            this.label4.Text = "Tiempo por pregunta";
+            this.label4.Text = "Tiempo por pregunta(segundos)";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label3.Location = new System.Drawing.Point(418, 154);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
@@ -283,12 +304,13 @@ namespace Brain_Rush
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.PanelPrincipal);
+            this.ClientSize = new System.Drawing.Size(800, 435);
             this.Controls.Add(this.panelGameInit);
             this.Controls.Add(this.PanelLogin);
+            this.Controls.Add(this.PanelPrincipal);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Brain rush";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.PanelLogin.ResumeLayout(false);
             this.PanelLogin.PerformLayout();
@@ -325,6 +347,7 @@ namespace Brain_Rush
         private System.Windows.Forms.NumericUpDown numTiempo;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnTerminar;
     }
 }
 

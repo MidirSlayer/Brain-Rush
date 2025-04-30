@@ -30,6 +30,7 @@ namespace Brain_Rush
         public Form1()
         {
             this.BackColor = Color.FromArgb(45,45,48);
+            this.Shown += (s, e) => { if (panelMensaje != null) { panelMensaje.BringToFront(); } };
 
             InitializeComponent();
 
@@ -37,7 +38,6 @@ namespace Brain_Rush
             PanelPrincipal.Visible = false;
             panelGameInit.Visible = false;
 
-            PanelLogin.BringToFront();
 
         }
 
@@ -62,13 +62,14 @@ namespace Brain_Rush
             string password = txtPassword.Text;
 
             if (AutenticarUsuario(usuario, password)){
-                await Transicion(PanelLogin, panelGameInit);
+
                 
+                MostrarPrincipal(usuario);
             
             }
             else 
             {
-                MostrarMesaje("Usuario o contraseña incorrectos", Color.DarkRed);
+                MostrarMensaje("Usuario o contraseña incorrectos", Color.DarkRed);
 
                 txtPassword.Text = "";
                 txtUsuario.Focus();
@@ -97,7 +98,7 @@ namespace Brain_Rush
             progressTiempo.Value = tiempoRestante;
 
             if (tiempoRestante <= 0 ) { timer.Stop();
-                MessageBox.Show("Se acabo el tiempo", "quiz");
+               MostrarMensaje("Se acabo el tiempo", Color.Red);
                 preguntaActual++;
                 MostrarPregunta();
             }
@@ -116,7 +117,7 @@ namespace Brain_Rush
 
             if(respuestaSeleccionada == -1)
             {
-                MostrarMesaje("Selecciona una Opcion!", Color.DarkGoldenrod);
+                MostrarMensaje("Selecciona una Opcion!", Color.DarkGoldenrod);
                 timer.Start();
                 return;
             }
@@ -124,12 +125,13 @@ namespace Brain_Rush
             var pregunta = preguntasPartida[preguntaActual];
             if (respuestaSeleccionada == pregunta.respuestasBuenas)
             {
+                MostrarMensaje("¡Correcto!", Color.Green);
                 puntaje += CalcularPuntos();
-                MostrarMesaje("¡Correcto!", Color.Green);
+                
             }
             else
             {
-                MostrarMesaje($"incorrecto. la respuesta correcta era: {pregunta.Opciones[pregunta.respuestasBuenas]}",Color.Red);
+                MostrarMensaje($"incorrecto. la respuesta correcta era: {pregunta.Opciones[pregunta.respuestasBuenas]}",Color.Red);
             }
 
             lblPuntaje.Text = $"puntaje: {puntaje}";
@@ -162,8 +164,10 @@ namespace Brain_Rush
             }
 
             var pregunta = preguntasPartida[preguntaActual];
-            lblPregunta.Text = pregunta.Leyenda;
 
+            lblPregunta.Text =Formato(pregunta.Leyenda);
+
+            AjustarAlturaLabel();
            
             rbOpcion1.Text = pregunta.Opciones[0];
             rbOpcion2.Text = pregunta.Opciones[1];
@@ -180,6 +184,30 @@ namespace Brain_Rush
             timer.Start();
         }
 
+        // formato para la pregunta
+
+        private string Formato (string texto)
+        {
+            int maxCarracteres = 60;
+            if (texto.Length <= maxCarracteres) return texto;
+
+            int ultimoEspacio = texto.LastIndexOf(' ', maxCarracteres);
+            if (ultimoEspacio > 0)
+            {
+                return texto.Substring(0, ultimoEspacio) + "\n" + texto.Substring(ultimoEspacio + 1);
+            }
+
+            return texto;
+        }
+
+        private void AjustarAlturaLabel ()
+        {
+            using (Graphics g = lblPregunta.CreateGraphics())
+            {
+                SizeF size = g.MeasureString(lblPregunta.Text, lblPregunta.Font, lblPregunta.Width);
+                lblPregunta.Height = (int)Math.Ceiling(size.Height) + lblPregunta.Top + lblPregunta.Padding.Bottom;
+            }
+        }
 
         //preguntas aqui
 
@@ -481,7 +509,7 @@ namespace Brain_Rush
                 case Modo.Facil:
                     puntosBase = 10;
                     break;
-                case Modo.intermedia:
+                case Modo.intermedio:
                     puntosBase = 20;
                     break;
                 case Modo.dificil:
@@ -498,13 +526,18 @@ namespace Brain_Rush
             private void TerminarPartida ()
         {
             timer.Stop();
-            MessageBox.Show($"Partida terminada!\nPuntaje final: {puntaje}/150", "quiz");
+             MostrarMensaje($"Partida terminada!\nPuntaje final: {puntaje}", Color.GreenYellow);
 
             PanelLogin.Visible = false;
             PanelPrincipal.Visible = false;
             panelGameInit.Visible = true;
 
             EmpezarJuego();
+        }
+
+        private void btnTerminar_Click(object sender, EventArgs e)
+        {
+            TerminarPartida();
         }
 
         // aqui comienza lo grafico
@@ -542,13 +575,17 @@ namespace Brain_Rush
                     rb.Font = opcionesFont;
                     rb.ForeColor = Color.White;
                     rb.Cursor = Cursors.Hand;
+                    
                 }
             }
 
             // Estilo para la pregunta
+            lblPregunta.AutoSize = false;
+            lblPregunta.Size = new Size(PanelPrincipal.Width - 40, 150);
             lblPregunta.Font = fontPreguntas;
             lblPregunta.ForeColor = Color.White;
-            lblPregunta.TextAlign = ContentAlignment.MiddleCenter;
+          
+            
 
             // Estilo para temporizador y puntaje
             lblTiempoLimite.Font = new Font("Segoe UI", 14, FontStyle.Bold);
@@ -570,7 +607,8 @@ namespace Brain_Rush
                 Font = new Font("Segoe UI", 48, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.Transparent,
-                AutoSize = true
+                AutoSize = true,
+                TextAlign = ContentAlignment.TopCenter
             };
 
             lblTitulo.Location = new Point((this.Width - lblTitulo.Width) / 4, 16);
@@ -596,6 +634,7 @@ namespace Brain_Rush
             {
                 Size = new Size(this.Width, this.Height),
                 Location = new Point(0, 0),
+                Dock = DockStyle.Fill,
                 Visible = false,
                 BackColor = Color.FromArgb(150, 0, 0, 0)
             };
@@ -613,7 +652,8 @@ namespace Brain_Rush
             {
                 Text = "CONTINUAR",
                 Dock = DockStyle.Bottom,
-                Height = 60
+                Height = 60,
+                
             };
             btnContinuar.Click += (s, e) => panelMensaje.Visible = false;
 
@@ -623,7 +663,7 @@ namespace Brain_Rush
             panelMensaje.BringToFront();
         }
 
-        private void MostrarMesaje(string texto, Color ColorFondo)// aqui se cambia el color y mensaje del panel
+        private void MostrarMensaje(string texto, Color ColorFondo)// aqui se cambia el color y mensaje del panel
         {
             var lbl = panelMensaje.Controls.Find("lblMensaje", true).FirstOrDefault() as Label;
             if (lbl != null)
@@ -659,8 +699,6 @@ namespace Brain_Rush
                 Application.DoEvents();
             }
         }
-
-
     }
 
 
@@ -674,7 +712,7 @@ namespace Brain_Rush
 
     public enum Modo// nombres de los modos de juego
     {
-        Facil, intermedia, dificil, aleatorio
+        Facil, intermedio, dificil, aleatorio
     }
 
     public static class ControlExtensions
